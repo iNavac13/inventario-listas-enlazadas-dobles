@@ -61,7 +61,28 @@ class Inventario{
         }
 
     eliminar(codigo){
-    
+            if(this.buscar(codigo)==null){
+                return false
+            }
+            let aux=this.primero
+            if(this.primero.codigo==codigo){
+                this.primero = aux.siguiente
+                if(this.primero.anterior){
+                    this.primero.anterior=null;
+                }
+                return true;
+            }else if(this.ultimo.codigo==codigo){
+                this.ultimo.anterior.siguiente=null
+                this.ultimo=this.ultimo.anterior
+                return true;
+            }else{
+                while(aux.siguiente.codigo!=codigo){
+                    aux=aux.siguiente
+                }
+                aux.siguiente=aux.siguiente.siguiente
+                aux.siguiente.anterior=aux
+                return true;
+            }
     };
 
     buscar(codigo){
@@ -111,10 +132,10 @@ btnAgregar.addEventListener('click', () => {
         const producto = new Producto(parseInt(codigo), nombre, cantidad, costo);
         res = miInv.agregarProducto(producto, codigo)
         if(res==true){
-            document.getElementById("listado").innerHTML=`El producto fue agregado`
+            document.getElementById("listado").innerHTML=`El producto ${nombre} con codigo ${codigo} fue agregado`
         }
         else if(res==false){
-            document.getElementById("listado").innerHTML=`NO se agregó el producto porque el código ya está en uso`;
+            document.getElementById("listado").innerHTML=`NO se agregó el producto porque el código ${codigo} ya está en uso`;
         }
     }
 });
@@ -126,7 +147,7 @@ btnEliminar.addEventListener('click', () => {
         document.getElementById("listado").innerHTML=`El producto con codigo: ${codigo} NO pudo ser eliminado porque no existe`
     } else{
         miInv.eliminar(codigo)
-        document.getElementById("listado").innerHTML=`El prodcuto con codigo: ${codigo} fue eliminado`
+        document.getElementById("listado").innerHTML=`El producto con codigo: ${codigo} fue eliminado`
 
     }
 
