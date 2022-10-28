@@ -67,25 +67,24 @@ class Inventario{
     }
     
     listar(){
-        let lista = '';
-        let contador = 0;
-        this.listaProductos.forEach(producto => {
-            lista += this.listaProductos[contador].info()+"<br>";
-            contador++
-        });
-        return `                LISTA
-        <br>${lista}`;
-    };
-    
+        let aux = this.primero;
+        let lista = ""
+        while(aux){
+            lista += `${aux.info()} <br>`;
+            aux= aux.siguiente;
+        }
+        return lista
+    }
 
     listarInverso(){
-        let lista = '';
-        for(let i=this.listaProductos.length-1;i>=0;i--){
-            lista += this.listaProductos[i].info()+"<br>";
+        let aux = this.ultimo;
+        let lista = ""
+        while(aux){
+            lista += `${aux.info()} <br>`
+            aux= aux.anterior;
         }
-        return `                LISTA INVERSA
-        <br>${lista}`;
-    };
+        return lista
+    }
 };
 
 const miInv = new Inventario()
