@@ -22,36 +22,46 @@ class Inventario{
             this.ultimo=null;
         };
 
-    agregarProducto(producto, codigo){
-        let i = this.listaProductos.length
-        if (i==0){
-            this.listaProductos[i]=producto
-            return true
+        agregarPrimero(nuevo){
+            this.primero.anterior=nuevo
+            nuevo.siguiente=this.primero;
+            this.primero=nuevo;
         }
-        let buscar = this.buscar(codigo)
-        if(buscar == false ){
-            while (this.listaProductos[i-1]!=null&&producto.codigo < this.listaProductos[i-1].codigo){
-                this.listaProductos[i]= this.listaProductos[i-1];
-                i--;
+
+        agregarUltimo(nuevo){
+            this.ultimo.siguiente=nuevo;
+            nuevo.anterior=this.ultimo;
+            this.ultimo=nuevo;
+        }
+
+        agregarProducto(nuevo){
+            if(this.buscar(nuevo.codigo)!=null){
+                return false;
             }
-            this.listaProductos[i]=producto;
-            return true
-        }else{
-            return false;
+            if(this.primero==null){
+                this.primero = nuevo
+                this.ultimo = nuevo
+            }else{
+                if(nuevo.codigo<this.primero.codigo){
+                    this.agregarPrimero(nuevo);
+                }else if(nuevo.codigo>this.ultimo.codigo){
+                    this.agregarUltimo(nuevo);
+                }else{
+                    let aux = this.primero
+                    while(aux.siguiente.codigo<nuevo.codigo){
+                        aux = aux.siguiente;
+                    }
+                    nuevo.siguiente = aux.siguiente;
+                    nuevo.anterior=aux
+                    aux.siguiente.anterior=nuevo
+                    aux.siguiente = nuevo
+                }
+            }
+            return true;
         }
-    }
 
     eliminar(codigo){
     
-            for (let i = 0; i <= this.listaProductos.length-1; i++) {
-                if (this.listaProductos[i].codigo == codigo){
-                        for (let x = i; x <= this.listaProductos.length-1; x++) {
-                            this.listaProductos[i] = this.listaProductos[i+1];
-                        }
-                }
-            }
-            this.listaProductos.pop();
-            return true;  
     };
 
     buscar(codigo){
@@ -112,7 +122,7 @@ btnAgregar.addEventListener('click', () => {
 const btnEliminar = document.getElementById('btnEliminar')
 btnEliminar.addEventListener('click', () => {
     const codigo = document.getElementById('txtCodigo').value
-    if (miInv.buscar(codigo) == false) {
+    if (miInv.buscar(codigo) == null) {
         document.getElementById("listado").innerHTML=`El producto con codigo: ${codigo} NO pudo ser eliminado porque no existe`
     } else{
         miInv.eliminar(codigo)
@@ -126,7 +136,7 @@ const btnBuscar = document.getElementById('btnBuscar')
 btnBuscar.addEventListener('click', () => {
     const codigo = document.getElementById('txtCodigo').value
     let producto = miInv.buscar(codigo);
-    if(miInv.buscar(codigo) == false){
+    if(miInv.buscar(codigo) == null){
         document.getElementById("listado").innerHTML=`<p>El producto con código ${codigo} NO fue encontrado</p>`
     } else {
         document.getElementById("listado").innerHTML=`<p>El producto con código ${codigo} fue encontrado</p><br>
